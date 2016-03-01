@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<erl>
+		-include("sessione.hrl").
+		out(Arg) ->
+		H = Arg#arg.headers,
+		C = H#headers.cookie,
+		Cookies=yaws_api:find_cookie_val("BLOGSSID", C),
+		{ok, Opaque}= yaws_api:cookieval_to_opaque (Cookies),
+		NomeUtente= Opaque#sessione.nickname,
+		{html,f("<title>.: BlogChat - Componi: ~p :.</title>",[NomeUtente])}.
+</erl>
+<link rel="shortcut icon" href="images/favicon.ico" />
+<link href="style.css" rel="stylesheet" type="text/css" />
+<script language="JavaScript">
+
+	//ottiene l'ora corrente del sistema al momento dell'accesso
+	function ottieniData(){
+		data = new Date();
+		ora =data.getHours();
+		minuti=data.getMinutes();
+		secondi=data.getSeconds();
+		giorno = data.getDay();
+		mese = data.getMonth();
+		date= data.getDate();
+		year= data.getYear();
+		if(minuti< 10)minuti="0"+minuti;
+		if(secondi< 10)secondi="0"+secondi;
+		if(year<1900)year=year+1900;
+		if(ora<10)ora="0"+ora;
+		if(giorno == 0) giorno = " Domenica ";
+		if(giorno == 1) giorno = " Lunedi' ";
+		if(giorno == 2) giorno = " Martedi' ";
+		if(giorno == 3) giorno = " Mercoledi' ";
+		if(giorno == 4) giorno = " Giovedi' ";
+		if(giorno == 5) giorno = " Venerdi' ";
+		if(giorno == 6) giorno = " Sabato ";
+		if(mese == 0) mese = "Gennaio ";
+		if(mese ==1) mese = "Febbraio ";
+		if(mese ==2) mese = "Marzo ";
+		if(mese ==3) mese = "Aprile ";
+		if(mese ==4) mese = "Maggio ";
+		if(mese ==5) mese = "Giugno ";
+		if(mese ==6) mese = "Luglio ";
+		if(mese ==7) mese = "Agosto ";
+		if(mese ==8) mese = "Settembre ";
+		if(mese ==9) mese = "Ottobre ";
+		if(mese ==10) mese = "Novembre ";
+		if(mese ==11) mese = "Dicembre";
+		data_oggi.innerHTML = "Oggi e' "+giorno+" "+date+" "+mese+" "+year+" - ora "+ora+":"+minuti+":"+secondi;
+	}
+		
+		//variabili per finestra popup
+		var stile = "top=10, left=10, width=800, height=600, status=no, menubar=no, toolbar=no scrollbars=no";
+		
+		//funzione per aprire finestre popup
+		function Popup(apri) 
+		{
+ 			window.open(apri, "", stile);
+		}
+
+</script>
+</head>
+
+<body onload="ottieniData()">
+<div id="topPan">
+  <div id="topHeaderPan">
+    <erl>
+		out(Arg) ->
+		{html,"<ul>
+		<li><a href=\"homePage_Utente.yaws\">Home</a></li>
+		<li class=\"company\">Componi</li>
+        <li><a href=\"archivio.yaws?pagina=1\">Archivio</a></li>
+		<li><a href=\"notizie.yaws?pagina=1\">Notizie</a></li>
+		<li><a href=\"chat/index.yaws\">Chat</a></li>
+        <li><a href=\"javascript:history.back()\">Indietro</a></li>
+       <li><a href=\"logout.yaws\">Logout</a></li>
+	</ul>"}.
+	</erl>
+	
+    <erl>
+		out(Arg) ->
+		{html, " <a href=\"homePage_utente.yaws\"><img src=\"images/logo.png\" title=\"Blog Division\" alt=\"Blog Division\" width=\"191\" height=\"84\" border=\"0\" /></a>"}.
+	</erl>
+</div>
+
+<div id="bodyPan">
+  <div id="bodyleftPan">
+		<erl>
+			out(Arg) ->
+			{html, "<h2>Invia un post</h2><p>Inserisci il post che vuoi scrivere all'interno di questo post.</p>"}.
+		</erl>
+		
+	<erl>
+		out(Arg) ->
+		{ehtml,{form,[{method,post},{action,"inserimentoPost.yaws"}],[{label,[],"Titolo"},{input,[{name,titolo},{type,text},{size,38}],""},{label,[],"Contenuto"},{textarea,[{name,"contenuto"},{rows,10},{cols,35}],""},{input,[{type,submit},{value,"Pubblica sul Blog!"}],""}]}}.
+	</erl>
+  </div>
+  
+  <div id="bodyrightPan">
+    <div id="loginPan">
+		<erl>
+		-include("sessione.hrl").
+
+			out(Arg) ->
+			H = Arg#arg.headers,
+			C = H#headers.cookie,
+			Cookies=yaws_api:find_cookie_val("BLOGSSID", C),
+			{ok, Opaque}= yaws_api:cookieval_to_opaque (Cookies),
+			NomeUtente= Opaque#sessione.nickname,
+			Val = funzioni:caricamentoAvatar(NomeUtente),
+			if
+				length(Val) == 0 -> {html,f("<h3><img src=\"avatar/avatar.png\" alt=\"Avatar personale\" width=\"75\" height=\"75\" />Utente: <span>~p</span></h3>",[NomeUtente])};
+				length(Val) > 0 -> [ImmagineCaricata] = Val,
+									ImmagineDaCaricare = string:concat("avatar/",ImmagineCaricata),
+									{html,f("<h3><img src=~p alt=\"Avatar personale\" width=\"75\" height=\"75\" />Utente: <span>~p</span></h3>",[ImmagineDaCaricare,NomeUtente])}
+			end.
+		</erl>
+		<erl>
+		-include("sessione.hrl").
+
+		out(Arg) ->
+		H = Arg#arg.headers,
+		C = H#headers.cookie,
+		Cookies=yaws_api:find_cookie_val("BLOGSSID", C),
+		{ok, Opaque}= yaws_api:cookieval_to_opaque (Cookies),
+		NomeUtente= Opaque#sessione.nickname,
+		Informazioni= funzioni:recuperaInformazioni(NomeUtente),
+		[{Nome_Utente,Cognome_Utente,Nascita_Utente,Email_Utente}]=Informazioni,
+			{html, f("<p align=\"center\">Nome: ~p</p>
+			<p align=\"center\">Cognome: ~p</p> 
+			<p align=\"center\">Nascita: ~p</p> 
+			<p align=\"center\">Email: ~p</p><br />
+			<p align=\"center\"><a href=\"cambioAvatar.yaws\" style=\"color:#03F\">Cambio Avatar</a></p>",[Nome_Utente,Cognome_Utente,Nascita_Utente,Email_Utente])}.
+		</erl>
+	</div>
+	<div id="loginBottomPan">&nbsp;</div>
+	<erl>
+			out(Arg) ->
+			{html, "<p class=\"hours\"><a href=\"#\">24/7 hours</a></p>"}.
+	</erl>
+  </div>
+</div>
+	
+<div id="footermainPan">
+  <div id="footerPan">
+  	<div id="footerlogoPan"><a href="homePage_utente.yaws"><img src="images/footerlogo.gif" title="Blog Division" alt="Blog Division" width="189" height="87" border="0" /></a></div>
+	<ul>
+  	 <li><a href="homePage_Utente.yaws">Home</a>| </li>
+        <li><a href="javascript:Popup('riguardoNoi.yaws')">Riguardo noi</a>| </li>
+        <li><a href="javascript:Popup('contatti.yaws')">Contatti</a>| </li>
+        <li><a href="componi.yaws">Componi</a>| </li>
+        <li><a href="archivio.yaws?pagina=1">Archivio</a>| </li>
+        <li><a href="notizie.yaws?pagina=1">Notizie</a>| </li>
+		<li><a href="chat/index.yaws">Chat</a>| </li>
+        <li><a href="logout.yaws">Logout</a></li>
+	</ul>
+	<ul class="data">
+    <li><p id="data_oggi"></p></li>
+  </ul>
+  </div>
+</div>
+</body>
+</html>

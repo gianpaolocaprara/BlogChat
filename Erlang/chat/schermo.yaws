@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="refresh" content="3">
+<title></title>
+<link href="style.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body bgcolor="#F4F4F4">
+<div id="bodyPan">
+<div id="bodyleftPan">
+
+<erl>
+	out(A) ->
+				Rows_file_ord = funzioniChat:leggiMessaggiChat(),
+				{html, lists:map(fun(H) -> {Id_Mess,NomeUtente,Messaggio,Data} = H, 
+								{{Anno,Mese,Giorno},{Ore,Minuti,Secondi}}=Data,
+								
+								Messaggio1= strre:sub(Messaggio, "[applauso]", "<img src='emoticons/applauso.gif'>"),
+								Messaggio2= strre:sub(Messaggio1, "[angry]", "<img src='emoticons/arrabbiato.gif'>"),
+								Messaggio3= strre:sub(Messaggio2, "[happy]", "<img src='emoticons/contento.gif'>"),
+								Messaggio4= strre:sub(Messaggio3, "[wink]", "<img src='emoticons/occhiolino.gif'>"),
+								Messaggio5= strre:sub(Messaggio4, "[embarassed]", "<img src='emoticons/imbarazzo.gif'>"),
+								Messaggio6= strre:sub(Messaggio5, "[scared]", "<img src='emoticons/impaurito.gif'>"),
+								Messaggio7= strre:sub(Messaggio6, "[tongue]", "<img src='emoticons/lingua.gif'>"),
+								Messaggio8= strre:sub(Messaggio7, "[laugh]", "<img src='emoticons/ridere.gif'>"),
+								Messaggio9= strre:sub(Messaggio8, "[surprise]", "<img src='emoticons/sorpreso.gif'>"),
+								Messaggio10= strre:sub(Messaggio9, "[sad]", "<img src='emoticons/triste.gif'>"),
+								
+
+								io_lib:format("[~p-~p-~p ~p:~p:~p] <b style=\"color:#5E9908\"><~p></b>: ~p<br />", [Anno,Mese,Giorno,Ore,Minuti,Secondi,NomeUtente,Messaggio10]) end, Rows_file_ord)}.
+</erl>
+</div>
+</div>
+</body>
+</html>

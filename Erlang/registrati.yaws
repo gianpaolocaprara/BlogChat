@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>.: BlogChat - Registrazione :.</title>
+<link rel="shortcut icon" href="images/favicon.ico" />
+<link href="style.css" rel="stylesheet" type="text/css" />
+<script language="JavaScript">
+
+	//ottiene l'ora corrente del sistema al momento dell'accesso
+	function ottieniData(){
+		data = new Date();
+		ora =data.getHours();
+		minuti=data.getMinutes();
+		secondi=data.getSeconds();
+		giorno = data.getDay();
+		mese = data.getMonth();
+		date= data.getDate();
+		year= data.getYear();
+		if(minuti< 10)minuti="0"+minuti;
+		if(secondi< 10)secondi="0"+secondi;
+		if(year<1900)year=year+1900;
+		if(ora<10)ora="0"+ora;
+		if(giorno == 0) giorno = " Domenica ";
+		if(giorno == 1) giorno = " Lunedi' ";
+		if(giorno == 2) giorno = " Martedi' ";
+		if(giorno == 3) giorno = " Mercoledi' ";
+		if(giorno == 4) giorno = " Giovedi' ";
+		if(giorno == 5) giorno = " Venerdi' ";
+		if(giorno == 6) giorno = " Sabato ";
+		if(mese == 0) mese = "Gennaio ";
+		if(mese ==1) mese = "Febbraio ";
+		if(mese ==2) mese = "Marzo ";
+		if(mese ==3) mese = "Aprile ";
+		if(mese ==4) mese = "Maggio ";
+		if(mese ==5) mese = "Giugno ";
+		if(mese ==6) mese = "Luglio ";
+		if(mese ==7) mese = "Agosto ";
+		if(mese ==8) mese = "Settembre ";
+		if(mese ==9) mese = "Ottobre ";
+		if(mese ==10) mese = "Novembre ";
+		if(mese ==11) mese = "Dicembre";
+		data_oggi.innerHTML = "Oggi e' "+giorno+" "+date+" "+mese+" "+year+" - ora "+ora+":"+minuti+":"+secondi;
+	}
+		
+		//variabili per finestra popup
+		var stile = "top=10, left=10, width=800, height=600, status=no, menubar=no, toolbar=no scrollbars=no";
+		
+		//funzione per aprire finestre popup
+		function Popup(apri) 
+		{
+ 			window.open(apri, "", stile);
+		}
+
+</script>
+</head>
+
+<body onload="ottieniData()">
+<div id="topPan">
+  <div id="topHeaderPan">
+    <erl>
+		out(Arg) ->
+		{ehtml,{ul,[],[{li,[],"<a href=\"index.yaws\">Home</a>"},{li,[{class,company}],"Registrati"}]}}.
+	</erl>
+	   
+    <erl>
+		out(Arg) ->
+		{html, " <a href=\"index.yaws\"><img src=\"images/logo.png\" title=\"Blog Division\" alt=\"Blog Division\" width=\"191\" height=\"84\" border=\"0\" /></a>"}.
+	</erl>
+</div>
+
+<div id="bodyPan">
+  <div id="bodyleftPan">
+		<erl>
+			out(A) ->
+					%estrae i dati dal form (utilizzo del metodo di ricorsione della lista per poter estrarre i dati)
+					L = yaws_api:parse_post(A),
+					[Obiettivo | Dati] = L,
+					{"nome",Nome} = Obiettivo,
+					[Obiettivo2 | Dati2] = Dati,
+					{"cognome",Cognome} = Obiettivo2,
+					[Obiettivo3 | Dati3] = Dati2,
+					{"nascita",Nascita} = Obiettivo3,
+					[Obiettivo4 | Dati4] = Dati3,
+					{"nome_utente",Nome_Utente} = Obiettivo4,
+					[Obiettivo5 | Dati5] = Dati4,
+					{"email",Email} = Obiettivo5,
+					[Obiettivo6 | Dati6] = Dati5,
+					{"pass",Pass} = Obiettivo6,
+					Val = funzioni:controlla_utente(Nome_Utente),
+				
+					if
+					length(Val) == 0 -> funzioni:registra_utente(Nome,Cognome,Nascita,Nome_Utente,Email,Pass),
+										{html, "<h2>Registrazione</h2>
+										<p>Complimenti! Ti sei registrato in maniera corretta al sito BlogChat! Segnati il tuo nome utente e la tua password! Benvenuto e buon divertimento nel nostro sito!</p></div>"};
+					length(Val) > 0 -> {html, "<h2>Errore</h2><p>Attenzione: Nome Utente già presente all'interno del nostro Database. Ricompila il form con un altro nome utente. Che aspetti?</p></div>
+										<div id=\"bodyrightPan\">
+										<div id=\"registerPan\"><h2>Registrazione <span>BlogChat</span></h2>
+										<form action=\"registrati.yaws\" method=\"post\" name=\"registrazione\">
+										<label>Nome</label><input name=\"nome\" type=\"text\" />
+										<label>Cognome</label>
+										<input name=\"cognome\" type=\"text\" />
+										<label>Nascita</label><input type=\"date\" name=\"nascita\" />
+										<label>Nome Utente</label><input name=\"nome_utente\" type=\"text\" />
+										<label>Email </label>
+										<input name=\"email\" type=\"text\" />
+										<label>Password</label><input name=\"pass\" type=\"password\" id=\"pass\" />
+										<input name=\"Input\" type=\"submit\" class=\"button\" value=\"Registrati\" />
+										</form></div>
+										<p class=\"hours\"><a href=\"javascript:Popup(\'riguardoNoi.yaws\')\">24/7 hours</a>
+										</div></div>"}
+					end.					
+		</erl>
+</div>
+
+
+<div id="footermainPan">
+  <div id="footerPan">
+  	<div id="footerlogoPan"><a href="index.yaws"><img src="images/footerlogo.gif" title="Blog Division" alt="Blog Division" width="189" height="87" border="0" /></a></div>
+	<ul>
+  	<li><a href="index.yaws">Home</a>| </li>
+  	<li><a href="javascript:Popup('riguardoNoi.yaws')">Riguardo noi</a> | </li>
+    <li><a href="javascript:Popup('contatti.yaws')">Contatti</a>| </li>
+  	<li><a href="registrazione.yaws">Registrati</a></li>
+	</ul>
+	<ul class="data">
+    <li><p id="data_oggi"></p></li>
+  </ul>
+  </div>
+</div>

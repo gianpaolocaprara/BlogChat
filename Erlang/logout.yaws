@@ -1,0 +1,10 @@
+<erl>
+
+out (Args) ->
+  Headers= Args#arg.headers,
+  Cookie= yaws_api:find_cookie_val ("BLOGSSID", Headers#headers.cookie),
+  yaws_api:delete_cookie_session (Cookie),
+  [{redirect_local, "/index.yaws"},
+  yaws_api:setcookie ("BLOGSSID", deleted, "/", "Thursday, 01-Jan-70 00:00:00 GMT")].
+
+</erl>

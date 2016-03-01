@@ -1,0 +1,23 @@
+		<erl>
+			-include("sessione.hrl").
+
+			out(Arg)->
+				H = Arg#arg.headers,
+				C = H#headers.cookie,
+				Cookies=yaws_api:find_cookie_val("BLOGSSID", C),
+				{ok, Opaque}= yaws_api:cookieval_to_opaque (Cookies),
+				NomeUtente= Opaque#sessione.nickname, 
+				Options = [{max_file_size, 10000000}], 
+				Ret = yaws_multipart:read_multipart_form(Arg, Options),
+				case Ret of {done, UploadParams} -> {ok,[{"filename",Filename},{temp_file,TempFile},{content_type,Tipo}]} = dict:find("nomefile",UploadParams),
+										case funzioni:controllaTipo(Tipo) of
+												true -> 
+												funzioni:registraAvatar(NomeUtente,Filename,TempFile),
+												{html,"<p>Avatar caricato con successo.<br />Puoi cambiare avatar un'altra volta se vuoi.Ritorna alla <a href=\"cambioAvatar.yaws\" style=\"color:#03F\">pagina di caricamento avatar</a></p>"};
+												false -> {html,"<p>Tipo di file non conosciuto! Ritorna alla <a href=\"cambioAvatar.yaws\" style=\"color:#03F\">pagina di caricamento avatar</a></p>"}
+										end;
+				{error, Reason} -> ErrDesc = wf:f("<p>File non ricevuto! Ritorna alla <a href=\"cambioAvatar.yaws\" style=\"color:#03F\">pagina di caricamento avatar</a></p>'~s'", [Reason]), {ehtml, {p,[], ErrDesc}}; 
+				{get_more, Cont, NewState} -> {get_more, Cont, NewState}; 
+				Other -> {ehtml, {p,[], "Altre ragioni"}} 
+				end.
+		</erl>

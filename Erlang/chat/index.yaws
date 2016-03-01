@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<html>
+<head>
+<title>.: BlogChat - Chat :.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="shortcut icon" href="../images/favicon.ico" />
+</head>
+<erl>
+			-include("sessione.hrl").
+
+			out(Arg) ->
+						{html,"<frameset rows=\"15%,40%,20%,28%\"  border=\"0\" framespacing=\"0\">
+						<frame src=\"head.yaws\" name=\"schermo\"  scrolling=\"no\">
+						<frame src=\"schermo.yaws\" name=\"schermo\" scrolling=\"yes\">
+						<frame src=\"plancia.yaws\" name=\"plancia\" noresize>
+						<frame src=\"footer.yaws\" name=\"schermo\" scrolling=\"no\" ></frameset>
+						<noframes>Il tuo browser non riesce a visualizzare i frames</noframes>"}.
+</erl>	
+
+<frameset noresize>
+
+<body>
+
+</body>
+
+</html>

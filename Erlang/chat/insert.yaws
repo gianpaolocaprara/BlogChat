@@ -1,0 +1,26 @@
+<html>
+
+<head>
+  <title>Inserimento del messaggio</title>
+</head>
+
+<body>
+
+<erl>
+	out(Arg) ->
+			L = yaws_api:parse_query(Arg),
+			[{"messaggio",Messaggio},{"nickname",Nickname},{"submit",Invio}] = L,
+			if 
+				Messaggio == "" -> {redirect, "plancia.yaws"};
+				true -> Messaggio1 = re:replace(Messaggio, "\n", " "),
+						funzioniChat:inserisciMessaggioChat(Nickname,Messaggio1),
+						{redirect, "plancia.yaws"}
+			end.
+
+</erl>
+
+
+
+</body>
+
+</html>
